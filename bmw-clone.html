@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BMW Uzbekistan — Clone</title>
+<style>
+:root{--blue:#1c69d4;--dark:#0e1114;--bg:#fff;--fg:#1a1d21;--card:#f3f4f6;--line:#e3e5e8;--muted:#5b6068}
+body.dark{--bg:#12151a;--fg:#eceef1;--card:#1d2127;--line:#2c3138;--muted:#9aa2ad}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{font-family:"Helvetica Neue",Arial,sans-serif;color:var(--fg);background:var(--bg);transition:background .3s}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.ticker{background:var(--blue);color:#fff;overflow:hidden;white-space:nowrap;font-size:13px;padding:8px 0}
+.ticker div{display:inline-block;padding-left:100%;animation:tick 30s linear infinite}
+.ticker span{margin-right:60px}
+@keyframes tick{to{transform:translateX(-100%)}}
+header{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line)}
+nav{max-width:1360px;margin:auto;display:flex;align-items:center;min-height:68px;padding:0 24px;gap:14px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.5px}
+.logo i{width:36px;height:36px;border-radius:50%;border:3px solid #222;background:conic-gradient(var(--blue) 0 25%,#fff 0 50%,var(--blue) 0 75%,#fff 0);display:block}
+.menu{display:flex;list-style:none}
+.menu>li{position:relative}
+.menu>li>a{display:block;padding:24px 11px;font-size:14.5px}
+.menu>li:hover>a{color:var(--blue)}
+.drop{position:absolute;top:100%;left:0;background:var(--bg);box-shadow:0 14px 30px rgba(0,0,0,.18);min-width:210px;padding:10px 0;display:none;border:1px solid var(--line)}
+.menu>li:hover .drop{display:block}
+.drop a{display:block;padding:10px 20px;font-size:14px;cursor:pointer}
+.drop a:hover{background:var(--card);color:var(--blue)}
+.spacer{flex:1}
+.tools{display:flex;align-items:center;gap:8px}
+.search{position:relative}
+.search input{width:170px;padding:9px 12px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);font-size:14px;border-radius:20px}
+.search input:focus{width:230px;border-color:var(--blue);outline:0}
+.search input{transition:width .25s}
+#sug{position:absolute;top:110%;left:0;right:0;min-width:260px;background:var(--bg);box-shadow:0 14px 30px rgba(0,0,0,.2);display:none;z-index:60;border:1px solid var(--line)}
+#sug div{padding:10px 14px;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;gap:10px}
+#sug div:hover{background:var(--card)}
+.ic{background:var(--card);padding:9px 12px;border-radius:20px;font-size:14px;white-space:nowrap}
+.ic:hover{background:var(--blue);color:#fff}
+.ic b{font-size:12px;background:var(--blue);color:#fff;border-radius:10px;padding:1px 6px;margin-left:3px}
+.btn{background:var(--blue);color:#fff;padding:12px 22px;font-size:14px;transition:.2s;display:inline-block;text-align:center}
+.btn:hover{background:#0f4fa8}
+.btn.ghost{background:transparent;border:1.5px solid #fff}
+.btn.ghost:hover{background:#fff;color:#111}
+.btn.line{background:transparent;color:var(--fg);border:1.5px solid var(--fg)}
+.btn.line:hover{background:var(--fg);color:var(--bg)}
+.burger{display:none;background:none;font-size:26px}
+.hero{position:relative;height:min(78vh,640px);overflow:hidden;background:#000}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity .9s;display:flex;align-items:center;padding:0 max(24px,8vw);color:#fff}
+.slide.on{opacity:1;z-index:2}
+.slide .txt{max-width:520px;z-index:3}
+.slide h1{font-size:clamp(34px,5.4vw,68px);line-height:1.02;font-weight:300;margin-bottom:16px}
+.slide h1 b{font-weight:700}
+.slide p{font-size:18px;opacity:.88;margin-bottom:28px;line-height:1.5}
+.slide .btns{display:flex;gap:12px;flex-wrap:wrap}
+.car{position:absolute;right:0;top:0;bottom:0;width:64%;display:flex;align-items:flex-end;justify-content:flex-end}
+.car svg{width:100%;margin-bottom:8%;filter:drop-shadow(0 30px 30px rgba(0,0,0,.5))}
+.car.photo img{width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(to left,#000 52%,transparent);mask-image:linear-gradient(to left,#000 52%,transparent)}
+.arrow{position:absolute;top:50%;z-index:5;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;font-size:22px;backdrop-filter:blur(6px)}
+.arrow:hover{background:rgba(255,255,255,.4)}
+.prev{left:18px}.next{right:18px}
+.dots{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:5}
+.dots button{width:34px;height:4px;background:rgba(255,255,255,.4)}
+.dots button.on{background:#fff}
+section{padding:72px 24px}
+.wrap{max-width:1280px;margin:auto}
+h2{font-size:clamp(26px,3.4vw,40px);font-weight:300;margin-bottom:8px}
+h2 b{font-weight:700}
+.sub{color:var(--muted);margin-bottom:24px;line-height:1.5}
+.bar-top{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:26px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters button{padding:10px 18px;background:var(--bg);border:1.5px solid var(--line);font-size:14px}
+.filters button.on,.filters button:hover{background:var(--dark);color:#fff;border-color:var(--dark)}
+.bar-top select,.bar-top input[type=range]{padding:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);font:inherit;font-size:14px}
+.bar-top label{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:22px}
+.card{background:var(--card);transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;position:relative}
+.card:hover{transform:translateY(-6px);box-shadow:0 18px 34px rgba(0,0,0,.18)}
+.pic{position:relative;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;background:linear-gradient(180deg,#dfe3e8,#f1f2f4)}
+.pic svg{width:90%}
+.pic.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.pic:hover img{transform:scale(1.06)}
+.pic::after{content:"Batafsil ma’lumot ›";position:absolute;left:0;right:0;bottom:0;padding:10px 14px;background:linear-gradient(transparent,rgba(0,0,0,.75));color:#fff;font-size:13px;opacity:0;transition:.25s;transform:translateY(8px)}
+.pic:hover::after{opacity:1;transform:none}
+.pic.big{aspect-ratio:16/9;margin:-34px -34px 18px;cursor:default}
+.pic.big::after{display:none}
+.heart{position:absolute;top:10px;right:10px;z-index:3;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.92);color:#999;font-size:19px}
+.heart.on{color:#e0152f}
+.tag{position:absolute;z-index:3;margin:10px;background:var(--blue);color:#fff;font-size:11px;padding:4px 9px}
+.info{padding:16px 20px 20px;display:flex;flex-direction:column;gap:6px;flex:1}
+.info h3{font-size:20px;font-weight:600}
+.meta{font-size:13px;color:var(--muted)}
+.price{font-size:22px;font-weight:700;margin-top:6px}
+.price small{font-size:12px;font-weight:400;color:var(--muted);display:block}
+.row{display:flex;gap:8px;margin-top:auto;padding-top:14px}
+.row .btn{flex:1;padding:10px;font-size:13px}
+.cmpb{background:none;color:var(--muted);font-size:13px;text-align:left;padding-top:8px}
+.cmpb.on{color:var(--blue);font-weight:700}
+.ads{background:var(--dark);color:#fff}
+.ads .grid{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.ad{padding:34px 30px;position:relative;overflow:hidden;min-height:260px;display:flex;flex-direction:column;justify-content:flex-end}
+.ad:nth-child(1){background:linear-gradient(135deg,#1c69d4,#0a2a63)}
+.ad:nth-child(2){background:linear-gradient(135deg,#c8102e,#4b0613)}
+.ad:nth-child(3){background:linear-gradient(135deg,#2f343b,#0a0c0f);border:1px solid #3b4047}
+.ad .big{font-size:64px;font-weight:700;line-height:1}
+.ad h3{font-size:22px;margin:8px 0 10px;font-weight:600}
+.ad p{opacity:.88;margin-bottom:18px;line-height:1.45}
+.ad::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;border:30px solid rgba(255,255,255,.07)}
+.timer{display:flex;gap:10px;margin-bottom:16px}
+.timer div{background:rgba(255,255,255,.15);padding:8px 12px;text-align:center;min-width:56px}
+.timer b{display:block;font-size:22px}
+.timer span{font-size:11px;opacity:.8}
+.ad .btn{align-self:flex-start;background:#fff;color:#111}
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;text-align:center}
+.why div{padding:26px 14px;border-top:3px solid var(--blue);background:var(--card)}
+.why b{display:block;font-size:34px;color:var(--blue)}
+footer{background:#0a0c0f;color:#aab0b8;padding:48px 24px;font-size:14px}
+footer .wrap{display:flex;gap:40px;flex-wrap:wrap;justify-content:space-between}
+footer h4{color:#fff;margin-bottom:12px}
+footer a{display:block;margin-bottom:8px}
+footer a:hover{color:#fff}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.68);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal.open{display:flex}
+.box{background:var(--bg);width:100%;padding:34px;position:relative;max-height:94vh;overflow:auto;animation:pop .25s}
+@keyframes pop{from{transform:scale(.95);opacity:0}}
+.box h3{font-size:26px;font-weight:300;margin-bottom:6px}
+.box h3 b{font-weight:700}
+.close{position:absolute;top:8px;right:14px;background:none;font-size:30px;z-index:5;color:var(--fg)}
+.pic.big+h3{margin-top:4px}
+.tabs{display:flex;margin:16px 0}
+.tabs button{flex:1;padding:12px;background:var(--card);font-size:14px}
+.tabs button.on{background:var(--blue);color:#fff}
+label.f{display:block;font-size:13px;margin:12px 0 4px;color:var(--muted)}
+.box input,.box select{width:100%;padding:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);font:inherit}
+.box input:focus,.box select:focus{border-color:var(--blue);outline:0}
+.box input[type=range]{padding:0;accent-color:var(--blue)}
+.err{color:#c8102e;font-size:12px;min-height:16px;margin-top:3px}
+.ok{background:#e7f5ec;color:#126b34;padding:14px;margin-top:14px;display:none}
+.box form>.btn{width:100%;margin-top:18px;padding:14px}
+.spec{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.spec div{background:var(--card);padding:10px 12px;font-size:12px;color:var(--muted)}
+.spec b{display:block;font-size:15px;color:var(--fg);margin-top:2px}
+.bar{display:grid;grid-template-columns:90px 1fr 80px;gap:10px;align-items:center;font-size:13px;margin:8px 0}
+.bar i{height:8px;background:var(--line);display:block;border-radius:4px;overflow:hidden}
+.bar i span{display:block;height:100%;background:var(--blue);border-radius:4px}
+.bar em{font-style:normal;font-weight:700;text-align:right}
+.bigprice{font-size:28px;font-weight:700;margin:16px 0 4px}
+.box .row .btn{padding:12px 8px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:14px}
+th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left}
+td.best{color:#128a46;font-weight:700}
+.res{background:var(--card);padding:16px;margin-top:16px}
+.res b{font-size:26px;display:block;color:var(--blue)}
+.fav{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.fav .pic{width:110px;aspect-ratio:16/10;flex:none}
+.fav .pic::after{display:none}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:12px 22px;z-index:200;font-size:14px;display:none}
+.media{position:relative;margin:-34px -34px 18px}
+.media .pic.big{margin:0}
+.v3d{display:none;aspect-ratio:16/9;background:radial-gradient(circle at 50% 30%,#3a4150,#0c0e12);cursor:grab;touch-action:none;overflow:hidden}
+.v3d:active{cursor:grabbing}
+.v3d canvas{display:block;width:100%;height:100%}
+.vt{position:absolute;left:12px;bottom:12px;display:flex;gap:6px;z-index:4}
+.vt button{padding:8px 14px;background:rgba(0,0,0,.65);color:#fff;font-size:13px;border-radius:18px;backdrop-filter:blur(6px)}
+.vt button.on{background:var(--blue)}
+.sw{display:none;gap:10px;align-items:center;flex-wrap:wrap;margin:-4px 0 14px;font-size:13px;color:var(--muted)}
+.sw button{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);box-shadow:0 0 0 2px var(--bg) inset}
+.sw button.on{border-color:var(--blue)}
+@media(max-width:1100px){.search input,.search input:focus{width:130px}}
+@media(max-width:960px){
+ nav{flex-wrap:wrap;padding:8px 16px}
+ .burger{display:block}
+ .menu{display:none;order:5;width:100%;flex-direction:column;background:var(--bg)}
+ .menu.show{display:flex}
+ .menu>li>a{padding:13px 8px}
+ .drop{position:static;box-shadow:none;display:block;border:0;padding:0 0 0 14px}
+ .tools{order:4;width:100%;flex-wrap:wrap}
+ .search{flex:1 1 100%}.search input,.search input:focus{width:100%}
+ .car{width:100%;opacity:.5}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="ticker"><div>
+<span>🔥 BMW Finance: 0.9% dan boshlab kredit</span>
+<span>⚡ Yangi BMW i5 — 582 km yurish masofasi</span>
+<span>🎁 Trade-in qiling va +$3 000 bonus oling</span>
+<span>🛠 Bepul texnik xizmat — 3 yil / 60 000 km</span>
+</div></div>
+
+<header>
+<nav>
+ <a href="#top" class="logo"><i></i> BMW</a>
+ <ul class="menu" id="menu">
+  <li><a href="#models">Modellar ▾</a>
+   <div class="drop"><a data-f="Sedan">Sedan</a><a data-f="SUV">SUV (X seriya)</a><a data-f="Coupe">Kupe va Kabriolet</a><a data-f="all">Barcha modellar</a></div></li>
+  <li><a href="#models" data-f="Elektr">Elektromobillar ▾</a>
+   <div class="drop"><a data-f="Elektr">BMW i4</a><a data-f="Elektr">BMW i5</a><a data-f="Elektr">BMW i7</a><a data-f="Elektr">BMW iX</a></div></li>
+  <li><a href="#models" data-f="M">BMW M ▾</a>
+   <div class="drop"><a data-f="M">M2</a><a data-f="M">M3</a><a data-f="M">M4</a><a data-f="M">M5</a></div></li>
+  <li><a>Xizmatlar ▾</a>
+   <div class="drop"><a data-act="credit">Kredit kalkulyatori</a><a data-act="drive">Sinov haydovi</a><a data-act="trade">Trade-in baholash</a><a data-act="cmp">Modellarni solishtirish</a></div></li>
+  <li><a href="#offers">Aksiyalar</a></li>
+  <li><a href="#contact">Aloqa</a></li>
+ </ul>
+ <div class="spacer"></div>
+ <button class="burger" id="burger" aria-label="Menyu">☰</button>
+ <div class="tools">
+  <div class="search"><input id="q" placeholder="Model qidirish…" autocomplete="off" aria-label="Qidirish"><div id="sug"></div></div>
+  <button class="ic" id="cur" title="Valyuta">USD</button>
+  <button class="ic" id="dark" title="Tungi rejim">🌙</button>
+  <button class="ic" data-act="fav" title="Sevimlilar">♥<b id="favN">0</b></button>
+  <button class="ic" data-act="cmp" title="Solishtirish">⇄<b id="cmpN">0</b></button>
+  <span id="userbox"></span>
+  <button class="btn" id="openReg" data-reg>Ro‘yxatdan o‘tish</button>
+ </div>
+</nav>
+</header>
+
+<div class="hero" id="top">
+ <div class="slide on" style="background:radial-gradient(circle at 70% 40%,#2a63b8,#050b18 70%)">
+  <div class="txt"><h1>Yangi <b>BMW i5</b><br>Kelajak hozir</h1><p>Elektr quvvati, bashoratli dinamika va 582 km masofa. Sinov haydovini bugun band qiling.</p>
+  <div class="btns"><button class="btn" data-act="drive">Sinov haydovi</button><a class="btn ghost" href="#models">Modellarni ko‘rish</a></div></div>
+  <div class="car" data-w="BMW_i5" data-sz="960" data-svg="sedan" data-color="#e8edf5"></div>
+ </div>
+ <div class="slide" style="background:radial-gradient(circle at 70% 40%,#7a1022,#12040a 70%)">
+  <div class="txt"><h1>BMW <b>M4</b><br>Sof adrenalin</h1><p>503 ot kuchi, 3.5 soniyada 100 km/soat. Poygadan to‘g‘ridan-to‘g‘ri ko‘chaga.</p>
+  <div class="btns"><button class="btn" data-reg data-model="BMW M4 Competition">Buyurtma berish</button><a class="btn ghost" href="#offers">Aksiyalar</a></div></div>
+  <div class="car" data-w="BMW_M4" data-sz="960" data-svg="coupe" data-color="#e0152f"></div>
+ </div>
+ <div class="slide" style="background:radial-gradient(circle at 70% 40%,#2f4a3a,#050a07 70%)">
+  <div class="txt"><h1>BMW <b>X5</b><br>Har yo‘lga tayyor</h1><p>Premium SUV: keng salon, xDrive to‘liq yuritma va hashamatli texnologiyalar.</p>
+  <div class="btns"><button class="btn" data-act="credit">Kreditni hisoblash</button><a class="btn ghost" href="#models">Barcha SUVlar</a></div></div>
+  <div class="car" data-w="BMW_X5" data-sz="960" data-svg="suv" data-color="#b9c4bd"></div>
+ </div>
+ <div class="slide" style="background:radial-gradient(circle at 70% 40%,#34383f,#07080a 70%)">
+  <div class="txt"><h1>BMW <b>7 Series</b><br>Hashamat chegarasi</h1><p>Kinoteatr ekrani, massaj o‘rindiqlari va jim yurish. Haqiqiy flagman.</p>
+  <div class="btns"><button class="btn" data-reg>Maslahat olish</button><a class="btn ghost" href="#models">Batafsil</a></div></div>
+  <div class="car" data-w="BMW_7_Series" data-sz="960" data-svg="sedan" data-color="#8f98a6"></div>
+ </div>
+ <button class="arrow prev" id="prev" aria-label="Oldingi">‹</button>
+ <button class="arrow next" id="next" aria-label="Keyingi">›</button>
+ <div class="dots" id="dots"></div>
+</div>
+
+<section id="models"><div class="wrap">
+ <h2>Barcha <b>BMW modellari</b></h2>
+ <p class="sub">Rasm ustiga bossangiz — ot kuchi, moment, tezlik va boshqa ma’lumotlar ochiladi. Narxlar taxminiy.</p>
+ <div class="bar-top">
+  <div class="filters" id="filters"></div>
+  <select id="sort" aria-label="Saralash"><option value="def">Saralash</option><option value="pa">Narx: arzonidan</option><option value="pd">Narx: qimmatidan</option><option value="hp">Quvvat: eng kuchli</option><option value="ac">Eng tez tezlanish</option></select>
+  <label>Narx ≤ <input type="range" id="max" min="30000" max="130000" step="5000" value="130000"><b id="maxv"></b></label>
+ </div>
+ <div class="grid" id="grid"></div>
+</div></section>
+
+<section class="ads" id="offers"><div class="wrap">
+ <h2 style="color:#fff">Maxsus <b>takliflar</b></h2>
+ <p class="sub" style="color:#aab0b8">Cheklangan vaqt — shoshiling!</p>
+ <div class="grid">
+  <div class="ad"><div class="big">0.9%</div><h3>BMW Finance</h3><p>Kreditni minimal foizda rasmiylashtiring. Dastlabki to‘lov — atigi 15%.</p><button class="btn" data-act="credit">Hisoblash</button></div>
+  <div class="ad"><div class="timer"><div><b id="d">0</b><span>kun</span></div><div><b id="h">0</b><span>soat</span></div><div><b id="m">0</b><span>daq</span></div><div><b id="s">0</b><span>son</span></div></div>
+   <h3>Trade-in +$3 000</h3><p>Eski avtomobilingizni topshiring va yangi BMW uchun qo‘shimcha bonus oling.</p><button class="btn" data-act="trade">Bonus olish</button></div>
+  <div class="ad"><div class="big">3 yil</div><h3>Bepul texnik xizmat</h3><p>Har bir yangi BMW bilan: 60 000 km gacha servis va 24/7 yo‘l yordami.</p><button class="btn" data-reg>Batafsil</button></div>
+ </div>
+</div></section>
+
+<section id="why"><div class="wrap">
+ <h2>Nega <b>BMW</b>?</h2><p class="sub">Haydash quvonchi — 100 yildan ortiq tajriba.</p>
+ <div class="why"><div><b>1916</b>BMW tashkil topgan yil</div><div><b>50:50</b>Ideal og‘irlik taqsimoti</div><div><b>5★</b>Euro NCAP xavfsizlik</div><div><b>140+</b>Mamlakatda sotuv</div></div>
+</div></section>
+
+<footer id="contact"><div class="wrap">
+ <div><h4>BMW Uzbekistan (clone)</h4>Toshkent, Amir Temur ko‘chasi 1<br>+998 71 200 00 00<br>info@bmw-clone.uz</div>
+ <div><h4>Modellar</h4><a href="#models">Sedan</a><a href="#models">SUV</a><a href="#models">Elektr</a><a href="#models">M</a></div>
+ <div><h4>Xizmatlar</h4><a href="#offers">BMW Finance</a><a href="#offers">Trade-in</a><a href="#offers">Servis</a></div>
+ <div style="max-width:320px;font-size:12px">Bu sayt faqat o‘quv maqsadida yaratilgan. BMW nomi va logotipi BMW AG ga tegishli. Fotosuratlar Wikipedia/Wikimedia Commons dan yuklanadi.</div>
+</div></footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true"><div class="box" id="mbox"></div></div>
+<div class="toast" id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+/* ===== MA’LUMOTLAR =====
+ C(nom, wikiSahifa, tur, toifa, narx$, ot kuchi, moment Nm, 0-100 s, maks km/s, yoqilg‘i, dvigatel, uzatma, yuritma, sarf/masofa, o‘rindiq, yukxona, rang, tavsif)
+ Barcha raqamlar taxminiy. Narxni/ma’lumotni shu yerda o‘zgartiring. */
+const C=(n,w,t,c,p,hp,tq,acc,top,fuel,eng,tr,dr,cons,seat,trunk,col,d)=>({n,w,t,c,p,hp,tq,acc,top,fuel,eng,tr,dr,cons,seat,trunk,col,d,ev:fuel==="Elektr"});
+const CARS=[
+C("BMW 118i","BMW_1_Series","Hatchback","Sedan",36900,136,220,8.5,213,"Benzin","1.5L 3-silindrli turbo","7 pog‘onali DCT","Old","5.7 L/100 km",5,"380 L","#c9d1dc","Shahar uchun ixcham va chaqqon premium hatchback."),
+C("BMW 220i Gran Coupé","BMW_2_Series","Sedan","Sedan",39900,156,230,7.9,225,"Benzin","1.5L 3-silindrli turbo","7 pog‘onali DCT","Old","6.0 L/100 km",5,"430 L","#2b4a8f","Kupe siluetidagi to‘rt eshikli, yoshlar uchun sport avtomobil."),
+C("BMW 330i","BMW_3_Series","Sedan","Sedan",45900,255,400,5.6,250,"Benzin","2.0L 4-silindrli turbo","8 pog‘onali avtomat","Orqa","6.8 L/100 km",5,"480 L","#d8dde4","Sport sedanlar etalon­i: ideal boshqaruv va qulaylik."),
+C("BMW 530i","BMW_5_Series","Sedan","Sedan",56900,255,400,6.1,250,"Benzin","2.0L 4-silindrli turbo","8 pog‘onali avtomat","Orqa","7.0 L/100 km",5,"530 L","#1a1d21","Biznes-klass: keng salon va ilg‘or yordamchi tizimlar."),
+C("BMW 740i","BMW_7_Series","Sedan","Sedan",99900,375,520,5.1,250,"Benzin","3.0L 6-silindrli turbo (mild-hybrid)","8 pog‘onali avtomat","Orqa / xDrive","8.5 L/100 km",5,"515 L","#8f98a6","Flagman sedan: hashamat, massaj o‘rindiqlari, kinoteatr ekrani."),
+C("BMW 430i Coupé","BMW_4_Series","Coupe","Coupe",52500,255,400,5.5,250,"Benzin","2.0L 4-silindrli turbo","8 pog‘onali avtomat","Orqa","7.0 L/100 km",4,"440 L","#c8472f","Ikki eshikli kupe — jozibali dizayn va sport xarakter."),
+C("BMW 840i Coupé","BMW_8_Series","Coupe","Coupe",90900,335,500,4.9,250,"Benzin","3.0L 6-silindrli turbo","8 pog‘onali avtomat","Orqa / xDrive","8.5 L/100 km",4,"420 L","#6b7a8f","Gran turismo: yirik kupe, hashamat va tezlik uyg‘unligi."),
+C("BMW Z4 sDrive30i","BMW_Z4","Roadster","Coupe",55200,255,400,5.1,250,"Benzin","2.0L 4-silindrli turbo","8 pog‘onali avtomat","Orqa","7.2 L/100 km",2,"281 L","#e5b100","Ochiq tomli ikki o‘rinli roadster — ozodlik tuyg‘usi."),
+C("BMW X1","BMW_X1","SUV","SUV",41500,241,350,6.3,240,"Benzin","2.0L 4-silindrli turbo","7 pog‘onali DCT","xDrive (to‘liq)","7.5 L/100 km",5,"540 L","#9aa7b4","Ixcham krossover: yuqori o‘tirish va tejamkorlik."),
+C("BMW X3","BMW_X3","SUV","SUV",49900,248,350,6.1,240,"Benzin","2.0L 4-silindrli turbo","8 pog‘onali avtomat","xDrive (to‘liq)","8.0 L/100 km",5,"570 L","#2e3a52","O‘rta o‘lchamli SUV: oila va sarguzasht uchun."),
+C("BMW X5 xDrive40i","BMW_X5","SUV","SUV",68500,375,520,5.3,250,"Benzin","3.0L 6-silindrli turbo","8 pog‘onali avtomat","xDrive (to‘liq)","9.0 L/100 km",5,"650 L","#b9c4bd","Premium SUV: keng salon, kuchli dvigatel va qulaylik."),
+C("BMW X6","BMW_X6","SUV Coupe","SUV",77900,375,520,5.2,250,"Benzin","3.0L 6-silindrli turbo","8 pog‘onali avtomat","xDrive (to‘liq)","9.3 L/100 km",5,"580 L","#4a1f2a","SUV va kupe aralashmasi — jasur, yarqiroq dizayn."),
+C("BMW X7 xDrive40i","BMW_X7","SUV","SUV",88000,375,520,5.8,250,"Benzin","3.0L 6-silindrli turbo","8 pog‘onali avtomat","xDrive (to‘liq)","9.5 L/100 km",7,"326 L","#d8d2c6","Eng katta BMW: 7 o‘rinli, hashamatli SUV."),
+C("BMW i4 eDrive35","BMW_i4","Elektr Gran Coupé","Elektr",52200,281,400,5.7,190,"Elektr","Elektr motor (orqa)","1 pog‘onali","Orqa","Masofa: ~483 km",5,"470 L","#5aa0e6","Elektr Gran Coupé: nol emissiya, BMW dinamikasi."),
+C("BMW i5 eDrive40","BMW_i5","Elektr sedan","Elektr",67100,335,430,5.7,193,"Elektr","Elektr motor (orqa)","1 pog‘onali","Orqa","Masofa: ~582 km",5,"490 L","#e8edf5","5 Series ning to‘liq elektr varianti."),
+C("BMW i7 xDrive60","BMW_i7","Elektr sedan","Elektr",124200,536,745,4.5,240,"Elektr","Ikki elektr motor","1 pog‘onali","To‘liq (AWD)","Masofa: ~625 km",5,"500 L","#3d4450","Elektr flagman: hashamat va ulkan 31.3″ orqa ekran."),
+C("BMW iX xDrive50","BMW_iX","Elektr SUV","Elektr",87100,516,765,4.4,200,"Elektr","Ikki elektr motor","1 pog‘onali","To‘liq (AWD)","Masofa: ~630 km",5,"500 L","#7fa8a0","Kelajak dizayndagi elektr SUV."),
+C("BMW M2","BMW_M2","Coupe","M",64000,453,550,4.1,250,"Benzin","3.0L 6-silindrli twin-turbo (S58)","8 pog‘onali M avtomat","Orqa","9.6 L/100 km",4,"390 L","#ff6a13","Eng ixcham M: sof haydash zavqi."),
+C("BMW M3 Competition","BMW_M3","Sedan","M",82000,503,650,3.5,250,"Benzin","3.0L 6-silindrli twin-turbo (S58)","8 pog‘onali M avtomat","Orqa / M xDrive","10.2 L/100 km",5,"480 L","#2fa36b","Kundalik sedan ko‘rinishidagi poyga mashinasi."),
+C("BMW M4 Competition","BMW_M4","Coupe","M",85000,503,650,3.5,250,"Benzin","3.0L 6-silindrli twin-turbo (S58)","8 pog‘onali M avtomat","Orqa / M xDrive","10.2 L/100 km",4,"440 L","#e0152f","Sport kupe: ulkan burilish barqarorligi va tovush."),
+C("BMW M5","BMW_M5","Sedan","M",119500,717,1000,3.5,250,"Gibrid","4.4L V8 twin-turbo + elektr motor","8 pog‘onali M avtomat","To‘liq (M xDrive)","~3.3 L/100 km (gibrid)",5,"466 L","#1c69d4","Eng kuchli M sedan: 717 ot kuchi, V8 + gibrid.")
+];
+const RATE=12700; /* 1$ = so‘m (taxminiy, o‘zingiz yangilang) */
+
+/* ===== YORDAMCHILAR ===== */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const MEM={};const S=(k,v)=>{try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v))}catch(e){if(v!==undefined)MEM[k]=v;return MEM[k]}};
+const st={f:"all",sort:"def",max:130000,q:"",cur:S("cur")||"USD",fav:S("fav")||[],cmp:[],mode:"reg"};
+const money=n=>st.cur==="USD"?"$"+n.toLocaleString("en-US"):(n*RATE/1e6).toFixed(0)+" mln so‘m";
+const moneyF=n=>st.cur==="USD"?"$"+Math.round(n).toLocaleString("en-US"):Math.round(n*RATE).toLocaleString("ru-RU")+" so‘m";
+const shape=c=>/SUV/.test(c.t)?"suv":(c.c==="Coupe"&&c.n!=="BMW M3 Competition")?"coupe":"sedan";
+function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display="none",2200)}
+
+/* ===== SVG ZAXIRA RASM (foto yuklanmasa) ===== */
+const BODY={sedan:"M14 84 L24 66 Q34 60 66 56 L98 38 Q152 28 204 38 L240 56 Q272 60 284 72 L288 84 Z",suv:"M14 84 L22 60 L66 54 L88 30 Q150 24 218 30 L248 54 L282 62 L288 84 Z",coupe:"M14 84 L28 68 L80 58 L120 40 Q166 32 206 44 L252 60 L284 70 L288 84 Z"};
+function carSVG(k,c,id){return`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}"/><stop offset="1" stop-color="${c}" stop-opacity=".62"/></linearGradient></defs><ellipse cx="150" cy="98" rx="132" ry="6" fill="rgba(0,0,0,.25)"/><path d="${BODY[k]}" fill="url(#g${id})"/><path d="M104 54 L124 40 Q150 34 150 38 L150 54Z M156 38 Q190 36 206 42 L236 54 L156 54Z" fill="#0f1a2b" opacity=".85"/><rect x="262" y="70" width="22" height="5" rx="2" fill="#fff"/><rect x="16" y="70" width="14" height="5" rx="2" fill="#ff3b30"/><g><circle cx="78" cy="84" r="17" fill="#111"/><circle cx="78" cy="84" r="9" fill="#c5cbd3"/><circle cx="228" cy="84" r="17" fill="#111"/><circle cx="228" cy="84" r="9" fill="#c5cbd3"/></g></svg>`}
+
+/* ===== HAQIQIY FOTOLAR (Wikipedia REST API, brauzerda yuklanadi) ===== */
+const PH={};
+function photo(w,sz){const k=w+sz;return PH[k]||(PH[k]=fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+w).then(r=>r.json()).then(j=>j.thumbnail?j.thumbnail.source.replace(/\/\d+px-/,"/"+sz+"px-"):null).catch(()=>null))}
+function hydrate(root){$$("[data-w]",root).forEach(el=>{
+ if(el.dataset.svg&&!el.firstChild)el.innerHTML=carSVG(el.dataset.svg,el.dataset.color,Math.random().toString(36).slice(2,7));
+ photo(el.dataset.w,el.dataset.sz||"500").then(u=>{if(!u)return;const im=new Image();im.alt=el.dataset.alt||"BMW";im.onload=()=>{el.innerHTML="";el.appendChild(im);el.classList.add("photo")};im.src=u})})}
+hydrate(document);
+
+/* ===== KARUSEL ===== */
+const slides=$$(".slide"),dots=$("#dots");let cur=0,timer;
+slides.forEach((_,i)=>{const b=document.createElement("button");b.setAttribute("aria-label","Slayd "+(i+1));b.onclick=()=>{go(i);auto()};dots.appendChild(b)});
+function go(i){cur=(i+slides.length)%slides.length;slides.forEach((s,k)=>s.classList.toggle("on",k===cur));[...dots.children].forEach((d,k)=>d.classList.toggle("on",k===cur))}
+function auto(){clearInterval(timer);timer=setInterval(()=>go(cur+1),5500)}
+$("#next").onclick=()=>{go(cur+1);auto()};$("#prev").onclick=()=>{go(cur-1);auto()};
+let sx=0;const hero=$(".hero");hero.addEventListener("touchstart",e=>sx=e.touches[0].clientX,{passive:true});
+hero.addEventListener("touchend",e=>{const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>50){go(cur+(d<0?1:-1));auto()}});
+go(0);auto();
+
+/* ===== MODELLAR RO‘YXATI ===== */
+const cats={all:"Barchasi",Sedan:"Sedan",SUV:"SUV",Coupe:"Kupe",Elektr:"Elektr",M:"BMW M"};
+Object.entries(cats).forEach(([k,v])=>{const b=document.createElement("button");b.textContent=v;b.dataset.f=k;$("#filters").appendChild(b)});
+function render(){
+ $$("#filters button").forEach(b=>b.classList.toggle("on",b.dataset.f===st.f));
+ let a=CARS.map((x,i)=>({x,i})).filter(({x})=>(st.f==="all"||x.c===st.f)&&x.p<=st.max&&(!st.q||x.n.toLowerCase().includes(st.q)));
+ const so={pa:(a,b)=>a.x.p-b.x.p,pd:(a,b)=>b.x.p-a.x.p,hp:(a,b)=>b.x.hp-a.x.hp,ac:(a,b)=>a.x.acc-b.x.acc}[st.sort];if(so)a.sort(so);
+ $("#maxv").textContent=money(st.max);
+ $("#grid").innerHTML=a.length?a.map(({x,i})=>`<article class="card">
+  ${x.ev?'<span class="tag">Elektr</span>':x.c==="M"?'<span class="tag" style="background:#c8102e">M Power</span>':''}
+  <button class="heart" data-fav="${i}" aria-label="Sevimli">♥</button>
+  <div class="pic" data-det="${i}" data-w="${x.w}" data-sz="500" data-svg="${shape(x)}" data-color="${x.col}" data-alt="${x.n}"></div>
+  <div class="info"><h3>${x.n}</h3><div class="meta">${x.t} · ${x.hp} ot kuchi · ${x.fuel}</div>
+  <div class="price">${money(x.p)}<small>dan boshlab · 0–100 km/soat: ${x.acc} s</small></div>
+  <button class="cmpb" data-cmp="${i}">⇄ Solishtirishga qo‘shish</button>
+  <div class="row"><button class="btn line" data-det="${i}">Batafsil</button><button class="btn" data-reg data-model="${x.n}">Buyurtma</button></div></div></article>`).join(""):`<p class="sub">Hech narsa topilmadi. Filtrni o‘zgartiring.</p>`;
+ hydrate($("#grid"));sync();
+}
+function sync(){
+ $$("[data-fav]").forEach(b=>b.classList.toggle("on",st.fav.includes(+b.dataset.fav)));
+ $$("[data-cmp]").forEach(b=>{const on=st.cmp.includes(+b.dataset.cmp);b.classList.toggle("on",on);if(b.classList.contains("cmpb"))b.textContent=on?"✓ Solishtirishda":"⇄ Solishtirishga qo‘shish"});
+ $("#favN").textContent=st.fav.length;$("#cmpN").textContent=st.cmp.length;
+}
+$("#filters").onclick=e=>{const b=e.target.closest("button");if(b){st.f=b.dataset.f;render()}};
+$("#sort").onchange=e=>{st.sort=e.target.value;render()};
+$("#max").oninput=e=>{st.max=+e.target.value;render()};
+
+/* ===== MODAL ===== */
+function openM(html,w){stop3D();$("#mbox").innerHTML='<button class="close" data-close aria-label="Yopish">×</button>'+html;$("#mbox").style.maxWidth=w||"440px";$("#modal").classList.add("open");hydrate($("#mbox"))}
+function closeM(){stop3D();$("#modal").classList.remove("open")}
+const opts=sel=>CARS.map((c,i)=>`<option value="${i}" ${i===sel?"selected":""}>${c.n}</option>`).join("");
+
+/* --- batafsil (ot kuchi va h.k.) --- */
+function detail(i){
+ const x=CARS[i],on=st.fav.includes(i);st.i3=i;
+ const bar=(l,v,t)=>`<div class="bar"><span>${l}</span><i><span style="width:${v}%"></span></i><em>${t}</em></div>`;
+ openM(`<div class="media"><div class="pic big" data-w="${x.w}" data-sz="960" data-svg="${shape(x)}" data-color="${x.col}" data-alt="${x.n}"></div><div class="v3d" id="v3d"></div>
+ <div class="vt"><button class="on" data-view="photo">📷 Foto</button><button data-view="3d">🧊 3D 360°</button></div></div>
+ <div class="sw" id="sw"><span>Rang:</span>${[x.col,...PAINT.map(p=>p[0])].map((c,k)=>`<button data-paint="${c}" title="${k?PAINT[k-1][1]:"Standart"}" style="background:${c}"></button>`).join("")}<span>· sichqoncha bilan aylantiring, g‘ildirak bilan yaqinlashtiring</span></div>
+ <h3><b>${x.n}</b></h3><p class="sub" style="margin-bottom:10px">${x.t} — ${x.d}</p>
+ <div class="spec"><div>Dvigatel<b>${x.eng}</b></div><div>Quvvat<b>${x.hp} ot kuchi (${Math.round(x.hp*.7355)} kVt)</b></div>
+ <div>Burovchi moment<b>${x.tq} Nm</b></div><div>0–100 km/soat<b>${x.acc} soniya</b></div>
+ <div>Maksimal tezlik<b>${x.top} km/soat</b></div><div>Uzatma<b>${x.tr}</b></div>
+ <div>Yuritma<b>${x.dr}</b></div><div>${x.ev?"Yurish masofasi":"Yoqilg‘i sarfi"}<b>${x.cons.replace("Masofa: ","")}</b></div>
+ <div>O‘rindiqlar<b>${x.seat} ta</b></div><div>Yukxona<b>${x.trunk}</b></div></div>
+ ${bar("Quvvat",x.hp/7.17,x.hp+" o.k.")}${bar("Tezlanish",Math.max(8,100-(x.acc-3)*15),x.acc+" s")}${bar("Maks. tezlik",x.top/2.5,x.top+" km/s")}
+ <div class="bigprice">${money(x.p)}</div><p class="meta" style="margin-bottom:12px">Boshlang‘ich narx (taxminiy). Oyiga ~${moneyF(pmt(x.p*.85,.9,60))} dan (kredit, 60 oy).</p>
+ <div class="row"><button class="btn" data-reg data-model="${x.n}">Buyurtma</button><button class="btn line" data-act="drive" data-i="${i}">Sinov haydovi</button><button class="btn line" data-act="credit" data-i="${i}">Kredit</button></div>
+ <div class="row"><button class="btn line heartb" data-fav="${i}">${on?"♥ Sevimlilarda":"♡ Sevimlilarga"}</button><button class="btn line" data-cmp="${i}">⇄ Solishtirish</button></div>`,"600px");
+}
+const pmt=(P,r,n)=>{const m=r/1200;return m?P*m/(1-Math.pow(1+m,-n)):P/n};
+
+/* --- kredit kalkulyatori --- */
+function credit(i=10){
+ openM(`<h3>Kredit <b>kalkulyatori</b></h3><p class="sub">BMW Finance taxminiy hisob-kitobi</p>
+ <label class="f">Model</label><select id="cm">${opts(i)}</select>
+ <label class="f">Dastlabki to‘lov: <b id="dpv"></b></label><input type="range" id="dp" min="10" max="70" value="15">
+ <label class="f">Muddat: <b id="nv"></b> oy</label><input type="range" id="nn" min="12" max="84" step="6" value="60">
+ <label class="f">Yillik foiz: <b id="rv"></b>%</label><input type="range" id="rr" min="0.9" max="18" step="0.1" value="0.9">
+ <div class="res">Oylik to‘lov<b id="r1"></b><span class="meta" id="r2"></span></div>
+ <div class="row"><button class="btn" data-act="drive" id="crbtn">Kredit uchun ariza</button></div>`);
+ const calc=()=>{const x=CARS[+$("#cm").value],dp=+$("#dp").value,n=+$("#nn").value,r=+$("#rr").value,P=x.p*(1-dp/100),m=pmt(P,r,n);
+  $("#dpv").textContent=dp+"% ("+money(Math.round(x.p*dp/100))+")";$("#nv").textContent=n;$("#rv").textContent=r.toFixed(1);
+  $("#r1").textContent=moneyF(m);$("#r2").textContent="Jami: "+moneyF(m*n)+" · Ortiqcha: "+moneyF(m*n-P)};
+ $$("#mbox input,#mbox select").forEach(e=>e.oninput=calc);calc();
+}
+
+/* --- sinov haydovi / trade-in --- */
+function lead(type,i=0){
+ const tr=type==="trade";
+ openM(`<h3>${tr?"Trade-in <b>baholash</b>":"Sinov <b>haydovi</b>"}</h3><p class="sub">${tr?"Eski mashinangizni bepul baholaymiz va +$3 000 bonus beramiz.":"Menejerimiz sizga qo‘ng‘iroq qilib, vaqtni kelishadi."}</p>
+ <form id="lf" data-type="${type}" novalidate><label class="f">Ism</label><input id="ln"><div class="err" id="e-ln"></div>
+ <label class="f">Telefon</label><input id="lp" placeholder="+998 90 123 45 67"><div class="err" id="e-lp"></div>
+ <label class="f">${tr?"Qiziqtirgan yangi model":"Model"}</label><select id="lm">${opts(+i)}</select>
+ ${tr?'<label class="f">Eski mashina (marka, yil)</label><input id="lo" placeholder="Chevrolet Malibu, 2018">':'<label class="f">Qulay sana</label><input id="ld" type="date">'}
+ <button class="btn" type="submit">Yuborish</button><div class="ok" id="ok"></div></form>`);
+ if($("#ld"))$("#ld").min=new Date().toISOString().slice(0,10);
+}
+
+/* --- solishtirish --- */
+function compare(){
+ if(st.cmp.length<2){openM(`<h3><b>Solishtirish</b></h3><p class="sub">Kamida 2 ta modelni tanlang (kartadagi “Solishtirishga qo‘shish”). Hozir: ${st.cmp.length} ta.</p>`);return}
+ const L=st.cmp.map(i=>CARS[i]);
+ const rows=[["Narx",x=>money(x.p),"p",-1],["Quvvat",x=>x.hp+" o.k.","hp",1],["Moment",x=>x.tq+" Nm","tq",1],["0–100 km/s",x=>x.acc+" s","acc",-1],["Maks. tezlik",x=>x.top+" km/s","top",1],["Dvigatel",x=>x.eng],["Uzatma",x=>x.tr],["Yuritma",x=>x.dr],["Sarf / masofa",x=>x.cons],["O‘rindiq",x=>x.seat],["Yukxona",x=>x.trunk]];
+ openM(`<h3><b>Solishtirish</b></h3><div style="overflow-x:auto"><table><tr><th></th>${L.map(x=>`<th>${x.n}</th>`).join("")}</tr>
+ ${rows.map(([l,f,k,d])=>{const best=k?(d>0?Math.max:Math.min)(...L.map(x=>x[k])):null;return`<tr><td>${l}</td>${L.map(x=>`<td class="${k&&x[k]===best?"best":""}">${f(x)}</td>`).join("")}</tr>`}).join("")}</table></div>
+ <p class="meta" style="margin-top:10px">Yashil — eng yaxshi ko‘rsatkich.</p><div class="row"><button class="btn line" data-act="clearcmp">Tozalash</button></div>`,"860px");
+}
+
+/* --- sevimlilar --- */
+function favs(){
+ openM(`<h3><b>Sevimlilar</b></h3>`+(st.fav.length?st.fav.map(i=>{const x=CARS[i];return`<div class="fav" data-det="${i}"><div class="pic" data-w="${x.w}" data-sz="500" data-svg="${shape(x)}" data-color="${x.col}"></div><div style="flex:1"><b>${x.n}</b><div class="meta">${x.hp} o.k. · ${money(x.p)}</div></div><button class="close" style="position:static" data-fav="${i}" data-refresh aria-label="Olib tashlash">×</button></div>`}).join(""):`<p class="sub">Hozircha bo‘sh. Kartadagi ♥ tugmasini bosing.</p>`),"520px");
+}
+
+/* --- ro‘yxatdan o‘tish / kirish --- */
+function regModal(model,mode="reg"){
+ st.mode=mode;const r=mode==="reg";
+ openM(`<h3>BMW <b>akkaunt</b></h3><div class="tabs"><button class="${r?"on":""}" data-tab="reg">Ro‘yxatdan o‘tish</button><button class="${r?"":"on"}" data-tab="log">Kirish</button></div>
+ <form id="rf" novalidate>${r?'<label class="f">Ism va familiya</label><input id="fn" autocomplete="name"><div class="err" id="e-fn"></div>':''}
+ <label class="f">Email</label><input id="em" type="email" autocomplete="email"><div class="err" id="e-em"></div>
+ ${r?'<label class="f">Telefon</label><input id="ph" placeholder="+998 90 123 45 67"><div class="err" id="e-ph"></div><label class="f">Qiziqtirgan model</label><select id="md">'+opts(Math.max(0,CARS.findIndex(c=>c.n===model)))+'</select>':''}
+ <label class="f">Parol (kamida 6 belgi)</label><input id="pw" type="password"><div class="err" id="e-pw"></div>
+ <button class="btn" type="submit">${r?"Ro‘yxatdan o‘tish":"Kirish"}</button><div class="ok" id="ok"></div></form>`);
+}
+function renderUser(){const u=S("bmwUser"),b=$("#userbox");
+ if(u&&u.session){b.innerHTML=`<span style="font-size:14px">Salom, <b>${u.name.split(" ")[0]}</b></span> <button class="btn line" id="lo" style="padding:8px 12px">Chiqish</button>`;$("#openReg").style.display="none";$("#lo").onclick=()=>{u.session=false;S("bmwUser",u);renderUser()}}
+ else{b.innerHTML="";$("#openReg").style.display=""}}
+
+/* ===== 3D (three.js, protsedurali model) ===== */
+const PAINT=[["#f2f2f2","Alpine White"],["#14171c","Black Sapphire"],["#1c4fa8","Portimao Blue"],["#8a919a","Brooklyn Grey"],["#b3122a","Toronto Red"],["#1f6b4a","Isle of Man Green"]];
+const P3={
+ sedan:{body:[[-2.3,.38],[-2.3,.9],[-1.6,.98],[-1,1],[.9,1],[1.5,.98],[2.3,.8],[2.3,.38]],cab:[[-1.25,1],[-.8,1.42],[.5,1.44],[1.05,1]],r:.4,wx:1.4},
+ coupe:{body:[[-2.3,.38],[-2.3,.88],[-1.5,.98],[-.9,1],[.9,1],[1.6,.94],[2.3,.78],[2.3,.38]],cab:[[-1,1],[-.5,1.36],[.4,1.38],[1,1]],r:.4,wx:1.4},
+ suv:{body:[[-2.3,.5],[-2.3,1.2],[.9,1.22],[1.6,1.15],[2.3,.95],[2.3,.5]],cab:[[-2.2,1.2],[-2,1.78],[.6,1.8],[1.2,1.22]],r:.47,wx:1.45}
+};
+let T3=null;
+function stop3D(){if(T3){cancelAnimationFrame(T3.raf);T3.ro.disconnect();T3.r.dispose();T3=null}}
+function ext(pts,depth,mat,bv){const s=new THREE.Shape();pts.forEach((p,i)=>i?s.lineTo(p[0],p[1]):s.moveTo(p[0],p[1]));
+ const g=new THREE.ExtrudeGeometry(s,{depth,bevelEnabled:!!bv,bevelSize:bv||0,bevelThickness:bv||0,bevelSegments:3});g.translate(0,0,-depth/2);return new THREE.Mesh(g,mat)}
+function build3D(i){
+ const box=$("#v3d");
+ if(!window.THREE){box.innerHTML='<p style="color:#fff;padding:30px">3D uchun internet kerak (three.js yuklanmadi).</p>';return}
+ const x=CARS[i],P=P3[shape(x)],w=box.clientWidth,h=box.clientHeight;
+ const r=new THREE.WebGLRenderer({antialias:true,alpha:true});r.setPixelRatio(Math.min(devicePixelRatio,2));r.setSize(w,h);box.innerHTML="";box.appendChild(r.domElement);
+ const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(38,w/h,.1,100);
+ sc.add(new THREE.HemisphereLight(0xffffff,0x555566,.95));
+ const d1=new THREE.DirectionalLight(0xffffff,1.1);d1.position.set(4,6,5);sc.add(d1);
+ const d2=new THREE.DirectionalLight(0x9db8ff,.5);d2.position.set(-5,3,-4);sc.add(d2);
+ const paintM=new THREE.MeshPhysicalMaterial({color:x.col,metalness:.5,roughness:.3,clearcoat:1,clearcoatRoughness:.08});
+ const glass=new THREE.MeshPhysicalMaterial({color:0x16202e,metalness:.85,roughness:.06,clearcoat:1});
+ const dark=new THREE.MeshStandardMaterial({color:0x08090b,roughness:.7});
+ const chrome=new THREE.MeshStandardMaterial({color:0xcfd4db,metalness:.9,roughness:.22});
+ const car=new THREE.Group();
+ car.add(ext(P.body,1.8,paintM,.08));
+ car.add(ext(P.cab,1.6,glass));
+ const c=P.cab,belt=c[0][1],roof=c[1][1];
+ car.add(ext([[c[1][0]-.03,roof],[c[2][0]+.03,roof],[c[2][0],roof-.07],[c[1][0],roof-.07]],1.66,paintM));
+ const pil=new THREE.Mesh(new THREE.BoxGeometry(.09,roof-belt,1.66),paintM);pil.position.set(-.1,(belt+roof)/2,0);car.add(pil);
+ const hf=P.body[P.body.length-2][1],tr=P.body[1][1];
+ const add=(g,m,px,py,pz)=>{const o=new THREE.Mesh(g,m);o.position.set(px,py,pz);car.add(o);return o};
+ [-1,1].forEach(s=>{
+  add(new THREE.BoxGeometry(.06,.11,.42),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xdfe9ff,emissiveIntensity:.9}),2.3,hf-.12,s*.62);
+  add(new THREE.BoxGeometry(.06,.1,.46),new THREE.MeshStandardMaterial({color:0xff2a2a,emissive:0xff1010,emissiveIntensity:.8}),-2.3,tr-.14,s*.65);
+  add(new THREE.BoxGeometry(.05,.22,.22),dark,2.31,hf-.22,s*.17);
+  add(new THREE.BoxGeometry(.13,.1,.16),paintM,c[3][0]-.12,belt+.06,s*.96);
+  P3.wheel(car,P,s);
+ });
+ add(new THREE.BoxGeometry(.04,.24,.05),chrome,2.31,hf-.22,0);
+ sc.add(car);
+ const cv=document.createElement("canvas");cv.width=cv.height=256;const g=cv.getContext("2d"),gr=g.createRadialGradient(128,128,10,128,128,128);gr.addColorStop(0,"rgba(0,0,0,.65)");gr.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=gr;g.fillRect(0,0,256,256);
+ const sh=new THREE.Mesh(new THREE.PlaneGeometry(7.4,4),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(cv),transparent:true,depthWrite:false}));sh.rotation.x=-Math.PI/2;sh.position.y=.01;sc.add(sh);
+ const V={ry:.7,el:.3,d:8,drag:false,lx:0,ly:0},still=matchMedia("(prefers-reduced-motion:reduce)").matches;
+ const cvs=r.domElement;
+ cvs.onpointerdown=e=>{V.drag=true;V.lx=e.clientX;V.ly=e.clientY;cvs.setPointerCapture(e.pointerId)};
+ cvs.onpointermove=e=>{if(!V.drag)return;V.ry+=(e.clientX-V.lx)*.01;V.el=Math.min(1,Math.max(.03,V.el+(e.clientY-V.ly)*.004));V.lx=e.clientX;V.ly=e.clientY};
+ cvs.onpointerup=cvs.onpointercancel=()=>V.drag=false;
+ cvs.onwheel=e=>{e.preventDefault();V.d=Math.min(12,Math.max(4.6,V.d+e.deltaY*.005))};
+ const ro=new ResizeObserver(()=>{const W=box.clientWidth,H=box.clientHeight;if(W&&H){r.setSize(W,H);cam.aspect=W/H;cam.updateProjectionMatrix()}});ro.observe(box);
+ T3={r,ro,paint:paintM,raf:0};
+ (function loop(){if(!T3)return;T3.raf=requestAnimationFrame(loop);if(!V.drag&&!still)V.ry+=.006;
+  car.rotation.y=V.ry;cam.position.set(0,.8+V.d*Math.sin(V.el),V.d*Math.cos(V.el));cam.lookAt(0,.7,0);r.render(sc,cam)})();
+}
+P3.wheel=(car,P,s)=>{[-1,1].forEach(f=>{
+ const gp=new THREE.Group();gp.position.set(f*P.wx,P.r,s*.9);
+ const cyl=(rad,wd,m)=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(rad,rad,wd,32),m);o.rotation.x=Math.PI/2;gp.add(o);return o};
+ cyl(P.r,.34,new THREE.MeshStandardMaterial({color:0x101112,roughness:.9}));
+ const rim=cyl(P.r*.64,.36,new THREE.MeshStandardMaterial({color:0xc9ced6,metalness:.9,roughness:.25}));
+ cyl(P.r*.2,.38,new THREE.MeshStandardMaterial({color:0x1c69d4}));
+ for(let k=0;k<5;k++){const sp=new THREE.Mesh(new THREE.BoxGeometry(.05,P.r*.62,.37),new THREE.MeshStandardMaterial({color:0x2a2d33,metalness:.7,roughness:.4}));sp.position.y=0;sp.rotation.z=k*Math.PI*2/5;sp.position.set(0,0,0);gp.add(sp)}
+ car.add(gp);
+ if(s===1){const a=new THREE.Mesh(new THREE.CylinderGeometry(P.r+.07,P.r+.07,1.98,28),new THREE.MeshStandardMaterial({color:0x050506}));a.rotation.x=Math.PI/2;a.position.set(f*P.wx,P.r,0);car.add(a)}
+})};
+function view(v){const d=v==="3d";
+ $("#v3d").style.display=d?"block":"none";$(".media .pic").style.display=d?"none":"";$("#sw").style.display=d?"flex":"none";
+ $$(".vt button").forEach(b=>b.classList.toggle("on",b.dataset.view===v));
+ if(d){if(!T3)build3D(st.i3)}else stop3D()}
+function paint(el){if(T3)T3.paint.color.set(el.dataset.paint);$$("[data-paint]").forEach(b=>b.classList.toggle("on",b===el))}
+
+/* ===== HODISALAR (bitta joyda) ===== */
+document.addEventListener("click",e=>{
+ const t=e.target;let el;
+ if(t.id==="modal"||t.closest("[data-close]"))return closeM();
+ if(el=t.closest("[data-view]"))return view(el.dataset.view);
+ if(el=t.closest("[data-paint]"))return paint(el);
+ if(el=t.closest("[data-fav]")){e.stopPropagation();const i=+el.dataset.fav,k=st.fav.indexOf(i);k<0?(st.fav.push(i),toast("Sevimlilarga qo‘shildi")):st.fav.splice(k,1);S("fav",st.fav);
+  $$(".heartb").forEach(b=>b.textContent=st.fav.includes(+b.dataset.fav)?"♥ Sevimlilarda":"♡ Sevimlilarga");sync();if(el.hasAttribute("data-refresh"))favs();return}
+ if(el=t.closest("[data-cmp]")){const i=+el.dataset.cmp,k=st.cmp.indexOf(i);if(k<0){if(st.cmp.length>=3)return toast("Ko‘pi bilan 3 ta model");st.cmp.push(i);toast("Solishtirishga qo‘shildi")}else st.cmp.splice(k,1);return sync()}
+ if(el=t.closest("[data-act]")){const a=el.dataset.act,i=el.dataset.i;
+  ({credit:()=>credit(i===undefined?10:+i),drive:()=>lead("drive",i||0),trade:()=>lead("trade"),cmp:compare,fav:favs,clearcmp:()=>{st.cmp=[];sync();closeM()}})[a]();$("#menu").classList.remove("show");return}
+ if(el=t.closest("[data-tab]"))return regModal(null,el.dataset.tab);
+ if(el=t.closest("[data-reg]"))return regModal(el.dataset.model);
+ if(el=t.closest("[data-det]"))return detail(+el.dataset.det);
+ if(el=t.closest(".menu [data-f]")){st.f=el.dataset.f;render();$("#menu").classList.remove("show");$("#models").scrollIntoView();return}
+ if(!t.closest(".search"))$("#sug").style.display="none";
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeM()});
+
+document.addEventListener("submit",e=>{
+ e.preventDefault();const f=e.target,v=id=>($("#"+id)||{value:""}).value.trim();
+ $$(".err",f).forEach(x=>x.textContent="");let bad=0;const er=(k,m)=>{$("#e-"+k).textContent=m;bad=1};
+ const okm=m=>{const o=$("#ok");o.textContent=m;o.style.display="block"};
+ if(f.id==="rf"){const r=st.mode==="reg";
+  if(r&&v("fn").length<3)er("fn","Ism va familiyangizni kiriting");
+  if(!/^\S+@\S+\.\S+$/.test(v("em")))er("em","Email noto‘g‘ri");
+  if(r&&!/^\+?\d[\d\s-]{8,14}$/.test(v("ph")))er("ph","Telefon raqamni to‘g‘ri kiriting");
+  if(v("pw").length<6)er("pw","Parol kamida 6 belgi bo‘lsin");if(bad)return;
+  if(r){S("bmwUser",{name:v("fn"),email:v("em"),phone:v("ph"),model:CARS[+v("md")].n,pw:v("pw"),session:true});okm(`Tabriklaymiz, ${v("fn")}! Menejer tez orada bog‘lanadi.`);renderUser();setTimeout(closeM,2000)}
+  else{const u=S("bmwUser");if(u&&u.email===v("em")&&u.pw===v("pw")){u.session=true;S("bmwUser",u);okm("Xush kelibsiz, "+u.name+"!");renderUser();setTimeout(closeM,1300)}else er("pw","Email yoki parol noto‘g‘ri (avval ro‘yxatdan o‘ting)")}}
+ if(f.id==="lf"){if(v("ln").length<2)er("ln","Ismingizni kiriting");if(!/^\+?\d[\d\s-]{8,14}$/.test(v("lp")))er("lp","Telefon raqamni to‘g‘ri kiriting");if(bad)return;
+  const L=S("leads")||[];L.push({type:f.dataset.type,name:v("ln"),phone:v("lp"),model:CARS[+v("lm")].n,date:v("ld"),old:v("lo")});S("leads",L);
+  okm("Rahmat, "+v("ln")+"! So‘rovingiz qabul qilindi.");setTimeout(closeM,2000)}
+});
+
+/* ===== NAVBAR: qidiruv, valyuta, tungi rejim ===== */
+const q=$("#q"),sug=$("#sug");
+q.oninput=()=>{const s=q.value.trim().toLowerCase();st.q=s;
+ const a=s?CARS.map((x,i)=>({x,i})).filter(({x})=>x.n.toLowerCase().includes(s)).slice(0,6):[];
+ sug.innerHTML=a.map(({x,i})=>`<div data-det="${i}"><span>${x.n}</span><b>${money(x.p)}</b></div>`).join("");sug.style.display=a.length?"block":"none"};
+q.onkeydown=e=>{if(e.key==="Enter"){sug.style.display="none";render();$("#models").scrollIntoView()}};
+q.onblur=()=>setTimeout(()=>{if(!q.value){st.q="";render()}},200);
+function setCur(){$("#cur").textContent=st.cur==="USD"?"USD":"UZS";render()}
+$("#cur").onclick=()=>{st.cur=st.cur==="USD"?"UZS":"USD";S("cur",st.cur);setCur()};
+const setDark=on=>{document.body.classList.toggle("dark",on);$("#dark").textContent=on?"☀️":"🌙";S("dark",on)};
+$("#dark").onclick=()=>setDark(!document.body.classList.contains("dark"));
+$("#burger").onclick=()=>$("#menu").classList.toggle("show");
+setDark(!!S("dark"));setCur();renderUser();
+
+/* ===== TAYMER ===== */
+const end=Date.now()+5*864e5+3*36e5;
+function tick(){const t=Math.max(0,end-Date.now()),p=n=>String(n).padStart(2,"0");
+ $("#d").textContent=Math.floor(t/864e5);$("#h").textContent=p(Math.floor(t%864e5/36e5));$("#m").textContent=p(Math.floor(t%36e5/6e4));$("#s").textContent=p(Math.floor(t%6e4/1e3))}
+tick();setInterval(tick,1000);
+</script>
+</body>
+</html>
