@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Crisp & Flame — Premium fast-food restorani. Yangi burgerlar, pitsalar, lavashlar, qovurilgan tovuq va tez yetkazib berish." />
+  <title>Crisp & Flame — Premium Fast Food</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./responsive.css" />
+</head>
+<body>
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- STICKY NAVBAR -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="#home" class="brand" aria-label="Crisp & Flame Home">
+        <span class="brand-badge">CF</span>
+        <span class="brand-text">CRISP <span class="accent">&amp;</span> FLAME</span>
+      </a>
+
+      <nav class="nav-links" id="navLinks" aria-label="Primary Navigation">
+        <a href="#home" class="nav-link" data-i18n="nav.home">Bosh sahifa</a>
+        <a href="#menu" class="nav-link" data-i18n="nav.menu">Menyu</a>
+        <a href="#about" class="nav-link" data-i18n="nav.about">Biz haqimizda</a>
+        <a href="#promotions" class="nav-link" data-i18n="nav.promotions">Aksiyalar</a>
+        <a href="#delivery" class="nav-link" data-i18n="nav.delivery">Yetkazish</a>
+        <a href="#contact" class="nav-link" data-i18n="nav.contact">Aloqa</a>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="lang-switcher" role="group" aria-label="Language Selector">
+          <button type="button" class="lang-btn active" data-lang="uz">UZB</button>
+          <button type="button" class="lang-btn" data-lang="ru">RUS</button>
+          <button type="button" class="lang-btn" data-lang="en">ENG</button>
+        </div>
+
+        <button type="button" id="themeToggle" class="icon-btn" aria-label="Toggle Dark/Light Mode" title="Dark / Light Mode">
+          <span class="theme-icon" id="themeIcon">🌙</span>
+        </button>
+
+        <button type="button" id="openCartBtn" class="cart-btn" aria-label="Shopping Cart">
+          <span>🛒</span>
+          <span class="cart-label" data-i18n="nav.cart">Savatcha</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+
+        <button type="button" id="openAuthBtn" class="auth-btn" data-i18n="nav.auth">Kirish</button>
+
+        <button type="button" id="hamburgerBtn" class="hamburger" aria-label="Open Menu" aria-expanded="false" aria-controls="navLinks">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section id="home" class="hero">
+      <div class="hero-glow"></div>
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="promo-pill" data-i18n="hero.badge">🔥 BUGUN MAXSUS 30% CHEGIRMA</div>
+          <h1 class="hero-title" data-i18n="hero.title">OLOVDA PISHGAN HAQIQIY TA'M</h1>
+          <p class="hero-subtitle" data-i18n="hero.subtitle">
+            100% tabiiy mol go‘shti, yangi pishirilgan brioche bulochkalar, eritilgan cheddar va 35 daqiqada issiq yetkazib berish.
+          </p>
+          <div class="hero-cta">
+            <a href="#menu" class="btn btn-primary" id="heroOrderBtn" data-i18n="hero.orderNow">Hoziroq buyurtma berish</a>
+            <a href="#menu" class="btn btn-outline" data-i18n="hero.exploreMenu">Menyuni ko‘rish</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <strong>35 min</strong>
+              <span data-i18n="hero.statDelivery">O‘rtacha yetkazish</span>
+            </div>
+            <div class="stat-item">
+              <strong>50+</strong>
+              <span data-i18n="hero.statItems">Taom va kombo</span>
+            </div>
+            <div class="stat-item">
+              <strong>4.9 ★</strong>
+              <span data-i18n="hero.statRating">Mijozlar bahosi</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-discount-tag" data-i18n="hero.discountTag">-30% COMBO</div>
+          <img
+            src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1000&q=80"
+            alt="Crisp & Flame Signature Double Cheeseburger"
+            class="hero-img"
+            data-fallback="burger"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY CHOOSE US -->
+    <section class="why-us section" id="why-us">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker" data-i18n="why.kicker">AFZALLIKLARIMIZ</span>
+          <h2 class="section-title" data-i18n="why.title">NIMA UCHUN CRISP &amp; FLAME?</h2>
+        </div>
+        <div class="why-grid">
+          <article class="why-card">
+            <div class="why-icon">⚡</div>
+            <h3 data-i18n="why.fastTitle">Tez yetkazib berish</h3>
+            <p data-i18n="why.fastDesc">Buyurtmangiz pechdan chiqqan zahoti maxsus termosumkada manzilingizga yuboriladi.</p>
+          </article>
+          <article class="why-card">
+            <div class="why-icon">🥬</div>
+            <h3 data-i18n="why.freshTitle">Yangi ingredientlar</h3>
+            <p data-i18n="why.freshDesc">Har kuni ertalab yangi sabzavotlar, mahalliy fermer go‘shti va tabiiy pishloqlar.</p>
+          </article>
+          <article class="why-card">
+            <div class="why-icon">👑</div>
+            <h3 data-i18n="why.qualityTitle">Eng yuqori sifat</h3>
+            <p data-i18n="why.qualityDesc">Xalqaro HACCP standartlari va tajribali oshpazlar nazorati ostida tayyorlanadi.</p>
+          </article>
+          <article class="why-card">
+            <div class="why-icon">💛</div>
+            <h3 data-i18n="why.priceTitle">Hamyonbop narxlar</h3>
+            <p data-i18n="why.priceDesc">Premium ta'mni adolatli narxlarda, doimiy aksiyalar va foydali kombolar bilan taqdim etamiz.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOD MENU -->
+    <section id="menu" class="menu-section section">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker" data-i18n="menu.kicker">BIZNING TAOMLAR</span>
+          <h2 class="section-title" data-i18n="menu.title">TO‘LIQ FAST-FOOD MENYUSI</h2>
+          <p class="section-subtitle" data-i18n="menu.subtitle">10 ta kategoriya bo‘yicha 50 ta saralangan taom va ichimlik</p>
+        </div>
+
+        <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="Menu Categories"></div>
+
+        <div class="menu-controls">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input
+              type="search"
+              id="menuSearch"
+              class="input-control search-input"
+              placeholder="Taom nomini qidiring..."
+              data-i18n-placeholder="menu.searchPlaceholder"
+              aria-label="Search menu items"
+            />
+          </div>
+
+          <div class="sort-box">
+            <label for="menuSort" class="sort-label" data-i18n="menu.sortLabel">Saralash:</label>
+            <select id="menuSort" class="input-control sort-select" aria-label="Sort menu items">
+              <option value="default" data-i18n="menu.sortDefault">Tavsiya etilgan</option>
+              <option value="price-asc" data-i18n="menu.sortAsc">Narx: arzonidan qimmatiga</option>
+              <option value="price-desc" data-i18n="menu.sortDesc">Narx: qimmatidan arzoniga</option>
+              <option value="rating-desc" data-i18n="menu.sortRating">Eng yuqori reyting</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="menuGrid" class="menu-grid"></div>
+      </div>
+    </section>
+
+    <!-- PROMOTIONS / DISCOUNTS -->
+    <section id="promotions" class="promotions-section section">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker" data-i18n="promo.kicker">MAXSUS TAKLIFLAR</span>
+          <h2 class="section-title" data-i18n="promo.title">CHEGIRMALAR VA AKSIYALAR</h2>
+          <p class="section-subtitle" data-i18n="promo.subtitle">20%, 30%, 50% chegirmalar, Combo menyular, 1+1 va kunlik maxsus takliflar</p>
+        </div>
+
+        <div id="promotionsGrid" class="promo-grid"></div>
+      </div>
+    </section>
+
+    <!-- ABOUT US -->
+    <section id="about" class="about-section section">
+      <div class="container about-grid">
+        <div class="about-media">
+          <img
+            src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1000&q=80"
+            alt="Crisp & Flame Kitchen and Burgers"
+            class="about-img"
+            data-fallback="burger"
+          />
+          <div class="about-badge-card">
+            <strong>2018</strong>
+            <span data-i18n="about.since">Yildan beri xizmatda</span>
+          </div>
+        </div>
+
+        <div class="about-content">
+          <span class="section-kicker" data-i18n="about.kicker">RESTORAN TARIXI</span>
+          <h2 class="section-title" data-i18n="about.title">BIZ HAQIMIZDA CRISP &amp; FLAME</h2>
+          <p class="about-text" data-i18n="about.desc1">
+            Crisp &amp; Flame — tezkor ovqatlanish tezligini restoran darajasidagi sifat bilan birlashtirgan zamonaviy brend. Biz har bir burger, pitsa va lavashni buyurtma tushgandan keyingina yangi mahsulotlardan tayyorlaymiz.
+          </p>
+          <p class="about-text" data-i18n="about.desc2">
+            Professional oshpazlarimiz maxsus ziravorlar aralashmasi, o‘zimiz tayyorlagan souslar va har kuni yangi keltiriladigan go‘sht hamda sabzavotlar bilan ishlaydi.
+          </p>
+
+          <ul class="about-features">
+            <li data-i18n="about.point1">✓ 100% sifatli va sertifikatlangan mahsulotlar</li>
+            <li data-i18n="about.point2">✓ 35 daqiqagacha tezkor yetkazib berish tizimi</li>
+            <li data-i18n="about.point3">✓ Har kuni yangi uzilgan ko‘kat va sabzavotlar</li>
+            <li data-i18n="about.point4">✓ Tajribali oshpazlar va qat'iy gigiyena nazorati</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- DELIVERY / LOCATION -->
+    <section id="delivery" class="delivery-section section">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker" data-i18n="delivery.kicker">YETKAZIB BERISH VA MANZIL</span>
+          <h2 class="section-title" data-i18n="delivery.title">MANZILNI TANLANG YOKI XARITADAN BELGILANG</h2>
+          <p class="section-subtitle" data-i18n="delivery.subtitle">Xarita ustiga bosing yoki manzilni qo‘lda kiriting — yetkazib berish narxi avtomatik hisoblanadi</p>
+        </div>
+
+        <div class="delivery-grid">
+          <form id="deliveryForm" class="delivery-form card-panel" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="deliveryCity" data-i18n="delivery.city">Shahar</label>
+                <select id="deliveryCity" class="input-control" required>
+                  <option value="Toshkent">Toshkent</option>
+                  <option value="Samarqand">Samarqand</option>
+                  <option value="Buxoro">Buxoro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="deliveryDistrict" data-i18n="delivery.district">Tuman</label>
+                <select id="deliveryDistrict" class="input-control" required></select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="deliveryStreet" data-i18n="delivery.street">Ko‘cha va uy raqami</label>
+              <input
+                type="text"
+                id="deliveryStreet"
+                class="input-control"
+                placeholder="Masalan: Amir Temur shoh ko‘chasi, 108-uy"
+                data-i18n-placeholder="delivery.streetPlaceholder"
+                required
+              />
+              <small class="error-msg" id="errDeliveryStreet"></small>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="deliveryPhone" data-i18n="delivery.phone">Telefon raqami</label>
+                <input
+                  type="tel"
+                  id="deliveryPhone"
+                  class="input-control"
+                  placeholder="+998 90 123 45 67"
+                  required
+                />
+                <small class="error-msg" id="errDeliveryPhone"></small>
+              </div>
+              <div class="form-group">
+                <label for="deliveryMethod" data-i18n="delivery.method">Yetkazib berish usuli</label>
+                <select id="deliveryMethod" class="input-control">
+                  <option value="courier" data-i18n="delivery.methodCourier">Kuryer orqali yetkazish</option>
+                  <option value="pickup" data-i18n="delivery.methodPickup">Olib ketish (Bepul)</option>
+                  <option value="express" data-i18n="delivery.methodExpress">Tezkor VIP kuryer</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="delivery-summary">
+              <div>
+                <span data-i18n="delivery.feeLabel">Yetkazib berish narxi:</span>
+                <strong id="deliveryFeeText">15 000 UZS</strong>
+              </div>
+              <div>
+                <span data-i18n="delivery.statusLabel">Holat:</span>
+                <strong class="status-badge" id="deliveryStatusText" data-i18n="delivery.statusReady">Manzil kutilmoqda</strong>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary full-width" data-i18n="delivery.confirmBtn">
+              Manzilni tasdiqlash
+            </button>
+          </form>
+
+          <div class="map-card card-panel">
+            <div id="deliveryMap" class="leaflet-map" aria-label="Delivery Interactive Map"></div>
+            <div class="map-caption">
+              <span data-i18n="delivery.selectedCoords">Tanlangan nuqta:</span>
+              <strong id="selectedCoords">41.3111, 69.2797 (Toshkent)</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CUSTOMER REVIEWS -->
+    <section id="reviews" class="reviews-section section">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker" data-i18n="reviews.kicker">MIJOZLAR FIKRI</span>
+          <h2 class="section-title" data-i18n="reviews.title">MEHMONLARIMIZ NIMA DEYDI?</h2>
+        </div>
+
+        <div class="review-slider">
+          <button type="button" id="prevReviewBtn" class="slider-arrow" aria-label="Previous Review">‹</button>
+          <div id="reviewTrack" class="review-track"></div>
+          <button type="button" id="nextReviewBtn" class="slider-arrow" aria-label="Next Review">›</button>
+        </div>
+        <div id="reviewDots" class="review-dots" aria-label="Review Slide Indicators"></div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="contact-section section">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker" data-i18n="contact.kicker">BOG‘LANISH</span>
+          <h2 class="section-title" data-i18n="contact.title">BIZ BILAN ALOQA</h2>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-info card-panel">
+            <div class="info-item">
+              <strong data-i18n="contact.phoneLabel">Telefon:</strong>
+              <span>+998 71 200 45 67</span>
+            </div>
+            <div class="info-item">
+              <strong data-i18n="contact.emailLabel">Email:</strong>
+              <span>hello@crispandflame.uz</span>
+            </div>
+            <div class="info-item">
+              <strong data-i18n="contact.addressLabel">Manzil:</strong>
+              <span data-i18n="contact.addressVal">Toshkent sh., Yunusobod t., Amir Temur ko‘chasi, 108</span>
+            </div>
+            <div class="info-item">
+              <strong data-i18n="contact.hoursLabel">Ish vaqti:</strong>
+              <span data-i18n="contact.hoursVal">Har kuni 09:00 – 02:00</span>
+            </div>
+            <div class="social-links">
+              <a href="https://t.me" target="_blank" rel="noopener noreferrer" class="social-pill">Telegram</a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-pill">Instagram</a>
+            </div>
+            <div id="contactMap" class="contact-map" aria-label="Restaurant Location Map"></div>
+          </div>
+
+          <form id="contactForm" class="contact-form card-panel" novalidate>
+            <h3 data-i18n="contact.formTitle">Xabar yuborish</h3>
+            <div class="form-group">
+              <label for="contactName" data-i18n="contact.name">Ismingiz</label>
+              <input type="text" id="contactName" class="input-control" required />
+              <small class="error-msg" id="errContactName"></small>
+            </div>
+            <div class="form-group">
+              <label for="contactEmail" data-i18n="contact.email">Email</label>
+              <input type="email" id="contactEmail" class="input-control" required />
+              <small class="error-msg" id="errContactEmail"></small>
+            </div>
+            <div class="form-group">
+              <label for="contactMessage" data-i18n="contact.message">Xabar</label>
+              <textarea id="contactMessage" rows="5" class="input-control" required></textarea>
+              <small class="error-msg" id="errContactMessage"></small>
+            </div>
+            <button type="submit" class="btn btn-primary full-width" data-i18n="contact.sendBtn">Xabarni yuborish</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#home" class="brand">
+          <span class="brand-badge">CF</span>
+          <span class="brand-text">CRISP <span class="accent">&amp;</span> FLAME</span>
+        </a>
+        <p data-i18n="footer.desc">Olovda pishgan haqiqiy fast-food, yangi mahsulotlar va tezkor yetkazib berish xizmati.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4 data-i18n="footer.linksTitle">Bo‘limlar</h4>
+        <a href="#home" data-i18n="nav.home">Bosh sahifa</a>
+        <a href="#menu" data-i18n="nav.menu">Menyu</a>
+        <a href="#promotions" data-i18n="nav.promotions">Aksiyalar</a>
+        <a href="#delivery" data-i18n="nav.delivery">Yetkazish</a>
+        <a href="#contact" data-i18n="nav.contact">Aloqa</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 data-i18n="footer.contactTitle">Bog‘lanish</h4>
+        <span>+998 71 200 45 67</span>
+        <span>hello@crispandflame.uz</span>
+        <span data-i18n="contact.hoursVal">Har kuni 09:00 – 02:00</span>
+        <div class="footer-socials">
+          <a href="https://t.me" target="_blank" rel="noopener noreferrer">Telegram</a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p data-i18n="footer.copyright">© 2026 Crisp &amp; Flame. Barcha huquqlar himoyalangan.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SHOPPING CART DRAWER -->
+  <div class="drawer-backdrop" id="cartBackdrop" aria-hidden="true"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping Cart">
+    <div class="drawer-header">
+      <h3 data-i18n="cart.title">Savatcha</h3>
+      <button type="button" id="closeCartBtn" class="close-btn" aria-label="Close Cart">✕</button>
+    </div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="drawer-footer">
+      <div class="cart-total-row">
+        <span data-i18n="cart.total">Jami summa:</span>
+        <strong id="cartTotal">0 UZS</strong>
+      </div>
+      <div class="cart-actions">
+        <button type="button" id="clearCartBtn" class="btn btn-ghost" data-i18n="cart.clear">Tozalash</button>
+        <button type="button" id="checkoutBtn" class="btn btn-primary" data-i18n="cart.checkout">Buyurtma berish</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- LOGIN / REGISTER MODAL -->
+  <div class="modal-backdrop" id="authModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="authModalTitle" data-i18n="auth.loginTitle">Kirish</h3>
+        <button type="button" id="closeAuthBtn" class="close-btn" aria-label="Close Auth Modal">✕</button>
+      </div>
+
+      <div class="auth-tabs">
+        <button type="button" id="tabLogin" class="auth-tab active" data-i18n="auth.tabLogin">Kirish</button>
+        <button type="button" id="tabRegister" class="auth-tab" data-i18n="auth.tabRegister">Ro‘yxatdan o‘tish</button>
+      </div>
+
+      <p class="demo-note" data-i18n="auth.demoNote">
+        Eslatma: bu frontend demo autentifikatsiya; haqiqiy xavfsiz tizim uchun backend server talab qilinadi.
+      </p>
+
+      <!-- LOGIN FORM -->
+      <form id="loginForm" class="auth-form" novalidate>
+        <div class="form-group">
+          <label for="loginIdentifier" data-i18n="auth.identifier">Email yoki telefon</label>
+          <input type="text" id="loginIdentifier" class="input-control" required />
+          <small class="error-msg" id="errLoginId"></small>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword" data-i18n="auth.password">Parol</label>
+          <input type="password" id="loginPassword" class="input-control" required />
+          <small class="error-msg" id="errLoginPass"></small>
+        </div>
+        <div class="form-meta">
+          <label class="checkbox-label">
+            <input type="checkbox" id="rememberMe" />
+            <span data-i18n="auth.remember">Remember Me</span>
+          </label>
+          <button type="button" id="forgotPasswordBtn" class="link-btn" data-i18n="auth.forgot">Forgot Password?</button>
+        </div>
+        <button type="submit" class="btn btn-primary full-width" data-i18n="auth.loginBtn">Kirish</button>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form id="registerForm" class="auth-form hidden" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="regFirstName" data-i18n="auth.firstName">Ism</label>
+            <input type="text" id="regFirstName" class="input-control" required />
+            <small class="error-msg" id="errRegFirst"></small>
+          </div>
+          <div class="form-group">
+            <label for="regLastName" data-i18n="auth.lastName">Familiya</label>
+            <input type="text" id="regLastName" class="input-control" required />
+            <small class="error-msg" id="errRegLast"></small>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="regPhone" data-i18n="auth.phone">Telefon raqami</label>
+            <input type="tel" id="regPhone" class="input-control" placeholder="+998 90 123 45 67" required />
+            <small class="error-msg" id="errRegPhone"></small>
+          </div>
+          <div class="form-group">
+            <label for="regEmail" data-i18n="auth.email">Email</label>
+            <input type="email" id="regEmail" class="input-control" required />
+            <small class="error-msg" id="errRegEmail"></small>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="regPassword" data-i18n="auth.password">Parol</label>
+            <input type="password" id="regPassword" class="input-control" required />
+            <small class="error-msg" id="errRegPass"></small>
+          </div>
+          <div class="form-group">
+            <label for="regConfirmPassword" data-i18n="auth.confirmPassword">Parolni tasdiqlash</label>
+            <input type="password" id="regConfirmPassword" class="input-control" required />
+            <small class="error-msg" id="errRegConfirm"></small>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary full-width" data-i18n="auth.registerBtn">Ro‘yxatdan o‘tish</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="./app.js"></script>
+</body>
+</html>
